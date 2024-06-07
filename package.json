@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.3",
+    "@types/cheerio": "^0.22.35",
+    "typescript": "^5.4.5"
+  }
+}
