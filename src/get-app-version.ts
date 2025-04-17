@@ -11,16 +11,6 @@ export default async function getAppVersion (): Promise<{
   console.log(`${INDEX_URL} fetched`)
 
   const $ = cheerio.load(html)
-  const appVersion: string | undefined = eval(`
-    (window => {
-      ${$('script:contains("window.CONFIG")').prop('textContent')};
-      return window.CONFIG.version
-    })({})
-  `)
-  if (!appVersion) {
-    throw new Error('Cannot find the app version')
-  }
-  console.log(`App version: ${appVersion}`)
 
   const scriptPath = $('script[src^="/_assets/app-"]').attr('src')
   if (!scriptPath) {
@@ -29,6 +19,12 @@ export default async function getAppVersion (): Promise<{
   const scriptUrl = new URL(scriptPath, INDEX_URL).href
   const scriptContent = await fetch(scriptUrl).then(res => res.text())
   console.log(`${scriptUrl} fetched`)
+
+  const appVersion: string | undefined = scriptContent.match(/version:"([\d.]+)"/)?.[1]
+  if (!appVersion) {
+    throw new Error('Cannot find the app version')
+  }
+  console.log(`App version: ${appVersion}`)
 
   const [, modId, modName] = scriptContent.match(/(\d+):"(HelpButtonContent)"/) ?? []
   if (!modId) {
