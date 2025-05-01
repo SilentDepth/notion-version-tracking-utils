@@ -12,7 +12,12 @@ export default async function getAppVersion (): Promise<{
 
   const $ = cheerio.load(html)
 
-  const scriptPath = $('script[src^="/_assets/app-"]').attr('src')
+  let experimental = true
+  let scriptPath = $('script[src^="/_assets/app-"]').attr('src')
+  if (!scriptPath) {
+    experimental = true
+    scriptPath = $('script[src^=/_assets/experimental/app-]').attr('src')
+  }
   if (!scriptPath) {
     throw new Error('Cannot find the path to app.js')
   }
@@ -34,7 +39,7 @@ export default async function getAppVersion (): Promise<{
   if (!modHash) {
     throw new Error('Cannot find the module hash of HelpButtonContent')
   }
-  const modScriptUrl = new URL(`/${modName}-${modHash}.js`, INDEX_URL).href
+  const modScriptUrl = new URL(`/_assets/${experimental ? 'experimental/' : ''}${modName}-${modHash}.js`, INDEX_URL).href
   const modScriptContent = await fetch(modScriptUrl).then(res => res.text())
   console.log(`${modScriptUrl} fetched`)
 
