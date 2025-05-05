@@ -12,7 +12,7 @@ export default async function getAppVersion (): Promise<{
 
   const $ = cheerio.load(html)
 
-  let experimental = true
+  let experimental = false
   let scriptPath = $('script[src^="/_assets/app-"]').attr('src')
   if (!scriptPath) {
     experimental = true
